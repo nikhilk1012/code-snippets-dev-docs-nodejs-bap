@@ -22,4 +22,6 @@ router.post('/on_update',mobility.onUpdate);
 router.post('/on_rating',mobility.onRating);
 router.post('/on_support',mobility.onSupport);
 router.post('/on_track',mobility.onTrack);
+router.post('/poll_request',mobility.pollRequest);
+
 module.exports = router;

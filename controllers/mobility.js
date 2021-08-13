@@ -66,11 +66,9 @@ const selectAgency = async ({ headers, body }, res) => {
     const response = await util.request(headers, context, message, "/select");
     let data = {
       messageId: context.messageId,
-      transactionId: context.transactionId
-    }
-    res
-      .status(200)
-      .send({ ...response.data, ...data });
+      transactionId: context.transactionId,
+    };
+    res.status(200).send({ ...response.data, ...data });
   } catch (error) {
     res.status(500).send(util.httpResponse("NACK", error));
   }
@@ -82,12 +80,12 @@ const selectAgency = async ({ headers, body }, res) => {
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
- const initializeOrder = async ({ headers, body }, res) => {
+const initializeOrder = async ({ headers, body }, res) => {
   try {
     const userBillingDetails = _.get(body, "userBillingDetails");
     const locationDetails = _.get(body, "locationDetails");
     const pickupInstructions = _.get(body, "pickupInstructions");
-    const dropInstructions = _.get(body, "dropInstructions")
+    const dropInstructions = _.get(body, "dropInstructions");
     const transactionId = _.get(body, "transactionId");
     const context = util.createContext(transactionId);
     const headers = util.constructAuthHeader(); // Auth Header
@@ -97,23 +95,21 @@ const selectAgency = async ({ headers, body }, res) => {
         fulfillment: {
           start: {
             location: locationDetails.start,
-            instructions: pickupInstructions
+            instructions: pickupInstructions,
           },
           end: {
             location: locationDetails.end,
-            instructions: dropInstructions
-          }
+            instructions: dropInstructions,
+          },
         },
-      }
-    }
+      },
+    };
     const response = await util.request(headers, context, message, "/init");
     let data = {
       messageId: context.message_id,
-      transactionId: context.transaction_id
-    }
-    res
-      .status(200)
-      .send({ ...response.data, ...data });
+      transactionId: context.transaction_id,
+    };
+    res.status(200).send({ ...response.data, ...data });
   } catch (error) {
     res.status(500).send(util.httpResponse("NACK", error));
   }
@@ -125,7 +121,7 @@ const selectAgency = async ({ headers, body }, res) => {
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
- const confirmOrder = async ({ headers, body }, res) => {
+const confirmOrder = async ({ headers, body }, res) => {
   try {
     const orderId = _.get(body, "orderId");
     const transactionId = _.get(body, "transactionId");
@@ -138,16 +134,14 @@ const selectAgency = async ({ headers, body }, res) => {
     const context = util.createContext(transactionId);
     let message = {
       order,
-      paymentTransactionId
-    }
+      paymentTransactionId,
+    };
     const response = await util.request(headers, context, message, "/confirm");
     let data = {
       messageId: context.message_id,
-      transactionId: context.transaction_id
-    }
-    res
-      .status(200)
-      .send({ ...response.data, ...data });
+      transactionId: context.transaction_id,
+    };
+    res.status(200).send({ ...response.data, ...data });
   } catch (error) {
     res.status(500).send(util.httpResponse("NACK", error));
   }
@@ -159,23 +153,21 @@ const selectAgency = async ({ headers, body }, res) => {
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
- const getOrderStatus = async ({ headers, body }, res) => {
+const getOrderStatus = async ({ headers, body }, res) => {
   try {
     const orderId = _.get(body, "orderId");
     const transactionId = _.get(body, "transactionId");
     const headers = util.constructAuthHeader(); // Auth Header
     const context = util.createContext(transactionId);
     let message = {
-      order_id: orderId
-    }
+      order_id: orderId,
+    };
     const response = await util.request(headers, context, message, "/status");
     let data = {
       messageId: context.message_id,
-      transactionId: context.transaction_id
-    }
-    res
-      .status(200)
-      .send({ ...response.data, ...data });
+      transactionId: context.transaction_id,
+    };
+    res.status(200).send({ ...response.data, ...data });
   } catch (error) {
     res.status(500).send(util.httpResponse("NACK", error));
   }
@@ -187,7 +179,7 @@ const selectAgency = async ({ headers, body }, res) => {
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
- const cancelOrder = async ({ headers, body }, res) => {
+const cancelOrder = async ({ headers, body }, res) => {
   try {
     const orderId = _.get(body, "orderId");
     const cancellationReasonId = _.get(body, "cancellationReasonId");
@@ -196,16 +188,14 @@ const selectAgency = async ({ headers, body }, res) => {
     const context = util.createContext(transactionId);
     let message = {
       order_id: orderId,
-      cancellation_reason_id: cancellationReasonId
-    }
+      cancellation_reason_id: cancellationReasonId,
+    };
     const response = await util.request(headers, context, message, "/cancel");
     let data = {
       messageId: context.message_id,
-      transactionId: context.transaction_id
-    }
-    res
-      .status(200)
-      .send({ ...response.data, ...data });
+      transactionId: context.transaction_id,
+    };
+    res.status(200).send({ ...response.data, ...data });
   } catch (error) {
     res.status(500).send(util.httpResponse("NACK", error));
   }
@@ -217,13 +207,13 @@ const selectAgency = async ({ headers, body }, res) => {
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
- const updateOrder = async ({ headers, body }, res) => {
+const updateOrder = async ({ headers, body }, res) => {
   try {
     const orderId = _.get(body, "orderId");
     const userBillingDetails = _.get(body, "userBillingDetails");
     const locationDetails = _.get(body, "locationDetails");
     const pickupInstructions = _.get(body, "pickupInstructions");
-    const dropInstructions = _.get(body, "dropInstructions")
+    const dropInstructions = _.get(body, "dropInstructions");
     const transactionId = _.get(body, "transactionId");
     let message = {
       order: {
@@ -232,30 +222,27 @@ const selectAgency = async ({ headers, body }, res) => {
         fulfillment: {
           start: {
             location: locationDetails.start,
-            instructions: pickupInstructions
+            instructions: pickupInstructions,
           },
           end: {
             location: locationDetails.end,
-            instructions: dropInstructions
-          }
+            instructions: dropInstructions,
+          },
         },
-      }
-    }
+      },
+    };
     const context = util.createContext(transactionId);
     const headers = util.constructAuthHeader(); // Auth Header
     const response = await util.request(headers, context, message, "/update");
     let data = {
       messageId: context.message_id,
-      transactionId: context.transaction_id
-    }
-    res
-      .status(200)
-      .send({ ...response.data, ...data });
+      transactionId: context.transaction_id,
+    };
+    res.status(200).send({ ...response.data, ...data });
   } catch (error) {
     res.status(500).send(util.httpResponse("NACK", error));
   }
 };
-
 
 /**
  * Sends the Request to BPP with Context and Message
@@ -263,7 +250,7 @@ const selectAgency = async ({ headers, body }, res) => {
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
- const rateOrder = async ({ headers, body }, res) => {
+const rateOrder = async ({ headers, body }, res) => {
   try {
     const orderId = _.get(body, "orderId");
     const rating = _.get(body, "rating");
@@ -272,21 +259,18 @@ const selectAgency = async ({ headers, body }, res) => {
     const headers = util.constructAuthHeader(); // Auth Header
     let message = {
       id: orderId,
-      value: rating
-    }
+      value: rating,
+    };
     const response = await util.request(headers, context, message, "/rate");
     let data = {
       messageId: context.message_id,
-      transactionId: context.transaction_id
-    }
-    res
-      .status(200)
-      .send({ ...response.data, ...data });
+      transactionId: context.transaction_id,
+    };
+    res.status(200).send({ ...response.data, ...data });
   } catch (error) {
     res.status(500).send(util.httpResponse("NACK", error));
   }
 };
-
 
 /**
  * Sends the Request to BPP with Context and Message
@@ -294,28 +278,25 @@ const selectAgency = async ({ headers, body }, res) => {
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
- const getSupport = async ({ headers, body }, res) => {
+const getSupport = async ({ headers, body }, res) => {
   try {
     const orderId = _.get(body, "orderId");
     const transactionId = _.get(body, "transactionId");
     const context = util.createContext(transactionId);
     const headers = util.constructAuthHeader(); // Auth Header
     let message = {
-      ref_id: orderId
-    }
+      ref_id: orderId,
+    };
     const response = await util.request(headers, context, message, "/support");
     let data = {
       messageId: context.message_id,
-      transactionId: context.transaction_id
-    }
-    res
-      .status(200)
-      .send({ ...response.data, ...data });
+      transactionId: context.transaction_id,
+    };
+    res.status(200).send({ ...response.data, ...data });
   } catch (error) {
     res.status(500).send(util.httpResponse("NACK", error));
   }
 };
-
 
 /**
  * Sends the Request to BPP with Context and Message
@@ -323,25 +304,23 @@ const selectAgency = async ({ headers, body }, res) => {
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
- const trackOrder = async ({ headers, body }, res) => {
+const trackOrder = async ({ headers, body }, res) => {
   try {
     const orderId = _.get(body, "orderId");
-    const callbackURL = `http://localhost:3000/track_order?${orderId}`
+    const callbackURL = `http://localhost:3000/track_order?${orderId}`;
     const transactionId = _.get(body, "transactionId");
     const context = util.createContext(transactionId);
     const headers = util.constructAuthHeader(); // Auth Header
     let message = {
       order_id: orderId,
-      callback_url: callbackURL
-    }
+      callback_url: callbackURL,
+    };
     const response = await util.request(headers, context, message, "/track");
     let data = {
       messageId: context.message_id,
-      transactionId: context.transaction_id
-    }
-    res
-      .status(200)
-      .send({ ...response.data, ...data });
+      transactionId: context.transaction_id,
+    };
+    res.status(200).send({ ...response.data, ...data });
   } catch (error) {
     res.status(500).send(util.httpResponse("NACK", error));
   }
@@ -372,7 +351,7 @@ const onSelect = async ({ body }, res) => {
  * @param {object} res Api response object.
  * @return {object} Saves Response to DB
  */
- const onInit = async ({ body }, res) => {
+const onInit = async ({ body }, res) => {
   await util.saveToDb(body);
 };
 
@@ -382,7 +361,7 @@ const onSelect = async ({ body }, res) => {
  * @param {object} res Api response object.
  * @return {object} Saves Response to DB
  */
- const onConfirm = async ({ body }, res) => {
+const onConfirm = async ({ body }, res) => {
   await util.saveToDb(body);
 };
 
@@ -392,7 +371,7 @@ const onSelect = async ({ body }, res) => {
  * @param {object} res Api response object.
  * @return {object} Saves Response to DB
  */
- const onStatus = async ({ body }, res) => {
+const onStatus = async ({ body }, res) => {
   await util.saveToDb(body);
 };
 
@@ -402,7 +381,7 @@ const onSelect = async ({ body }, res) => {
  * @param {object} res Api response object.
  * @return {object} Saves Response to DB
  */
- const onCancel = async ({ body }, res) => {
+const onCancel = async ({ body }, res) => {
   await util.saveToDb(body);
 };
 
@@ -412,7 +391,7 @@ const onSelect = async ({ body }, res) => {
  * @param {object} res Api response object.
  * @return {object} Saves Response to DB
  */
- const onUpdate = async ({ body }, res) => {
+const onUpdate = async ({ body }, res) => {
   await util.saveToDb(body);
 };
 
@@ -422,7 +401,7 @@ const onSelect = async ({ body }, res) => {
  * @param {object} res Api response object.
  * @return {object} Saves Response to DB
  */
- const onRating = async ({ body }, res) => {
+const onRating = async ({ body }, res) => {
   await util.saveToDb(body);
 };
 
@@ -432,7 +411,7 @@ const onSelect = async ({ body }, res) => {
  * @param {object} res Api response object.
  * @return {object} Saves Response to DB
  */
- const onSupport = async ({ body }, res) => {
+const onSupport = async ({ body }, res) => {
   await util.saveToDb(body);
 };
 
@@ -442,13 +421,26 @@ const onSelect = async ({ body }, res) => {
  * @param {object} res Api response object.
  * @return {object} Saves Response to DB
  */
- const onTrack = async ({ body }, res) => {
+const onTrack = async ({ body }, res) => {
   await util.saveToDb(body);
 };
 
-
-
-
+const pollRequest = async(req) => {
+  const messageId = _.get(req, "messageId");
+  do {
+    let polling = true;
+    try {
+      // Waiting for 5 seconds before retrieving
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      const response = await mobility.getData(messageId);
+      if (response) {
+        polling = false;
+      }
+    } catch (err) {
+      console.error(`Problem in execution : ${err}`)
+    }
+  } while (polling);
+}
 
 module.exports = {
   searchByPickupAndDropLoc,
@@ -470,5 +462,6 @@ module.exports = {
   onSupport,
   getSupport,
   onTrack,
-  trackOrder
+  trackOrder,
+  pollRequest
 };
