@@ -70,7 +70,7 @@ const request = (headers, context, message, pathURI) => {
     message,
   };
   addSignature(headers);
-  await axios({ URL: `${uri}/${pathURI}`, method: "POST", data: response, headers});
+  return axios({ URL: `${uri}/${pathURI}`, method: "POST", data: response, headers});
 };
 
 module.exports = {

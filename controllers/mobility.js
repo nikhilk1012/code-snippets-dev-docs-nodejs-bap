@@ -37,11 +37,7 @@ const searchByPickupAndDropLoc = async ({ headers, body }, res) => {
       transactionId
     }
     const { data: { message, error }} = await util.request(headers, context, message, "/search");
-    if (message.status = "ACK") {
-      res.status(200).send(util.httpResponse("ACK", "", data));
-    } else {
-      res.status(200).send(util.httpResponse(message, error ));
-    }
+    res.status(200).send(util.httpResponse(message.status, error, data ));
   } catch (error) {
     res.status(500).send(util.httpResponse("NACK", error));
   }
