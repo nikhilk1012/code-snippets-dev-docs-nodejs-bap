@@ -17,7 +17,7 @@ const searchByPickupAndDropLoc = async ({ headers, body }, res) => {
     }
     const transactionId = _.get(body, "transactionId");
     const context = util.createContext(transactionId);
-    const headers = util.constructHeader();
+    const headers = util.constructHeader(); // Auth Header
     const message = {
       fulfillment: {
         start: {
@@ -32,21 +32,18 @@ const searchByPickupAndDropLoc = async ({ headers, body }, res) => {
         },
       },
     };
-    let data = {
-      messageId,
-      transactionId
-    }
-    const { data: { message, error }} = await util.request(headers, context, message, "/search");
-    res.status(200).send(util.httpResponse(message.status, error, data ));
+    const response = await util.request(headers, context, message, "/search");
+    res.status(200).send(response.data);
   } catch (error) {
     res.status(500).send(util.httpResponse("NACK", error));
   }
 };
 
 const onSearch = ({ body }, res) => {
-  saveToDb()
+  await util.saveToDb(body);
 };
 
 module.exports = {
   searchByPickupAndDropLoc,
+  onSearch,
 };
