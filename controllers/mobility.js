@@ -1,6 +1,5 @@
 const _ = require("lodash");
 const util = require("../config/util");
-const { saveToDb } = require("../services/mobility");
 
 /**
  * Performs the search using Client request.
@@ -19,27 +18,31 @@ const searchByPickupAndDropLoc = async ({ headers, body }, res) => {
     const context = util.createContext(transactionId);
     const headers = util.constructHeader(); // Auth Header
     const message = {
-      fulfillment: {
-        start: {
-          location: {
-            gps: startLoc,
+      intent: {
+        fulfillment: {
+          start: {
+            location: {
+              gps: startLoc,
+            },
+          },
+          end: {
+            location: {
+              gps: endLoc,
+            },
           },
         },
-        end: {
-          location: {
-            gps: endLoc,
-          },
-        },
-      },
+      }
     };
     const response = await util.request(headers, context, message, "/search");
-    res.status(200).send(response.data);
+    res
+      .status(200)
+      .send({ ...response.data, messageId: context["message_id"] });
   } catch (error) {
     res.status(500).send(util.httpResponse("NACK", error));
   }
 };
 
-const onSearch = ({ body }, res) => {
+const onSearch = async ({ body }, res) => {
   await util.saveToDb(body);
 };
 
