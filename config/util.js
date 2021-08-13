@@ -80,5 +80,6 @@ module.exports = {
   lookup,
   request,
   createContext,
-  constructAuthHeader
+  constructAuthHeader,
+  saveToDb
 };
