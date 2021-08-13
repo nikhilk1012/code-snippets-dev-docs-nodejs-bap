@@ -30,6 +30,10 @@ const addSignature = (headers) => {
   // TO-DO Add Signature
 };
 
+const saveToDb = () => {
+
+}
+
 const createContext = (transactionId) => {
   let context = {
     domain: "mobility",
@@ -49,7 +53,7 @@ const createContext = (transactionId) => {
   return context;
 };
 
-const constructHeader = () => {
+const constructAuthHeader = () => {
   // ... Add Authorization
   return {
 
@@ -76,5 +80,5 @@ module.exports = {
   lookup,
   request,
   createContext,
-  constructHeader
+  constructAuthHeader
 };
