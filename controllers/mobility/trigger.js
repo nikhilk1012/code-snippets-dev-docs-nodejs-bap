@@ -1,6 +1,6 @@
 const _ = require("lodash");
-const mobility = require("../services/mobility");
-const util = require("../config/util");
+const mobility = require("../../services/mobility");
+const util = require("../../config/util");
 
 /**
  * Sends the Request to BPP with Context and Message
@@ -8,7 +8,7 @@ const util = require("../config/util");
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
-const searchByPickupAndDropLoc = async ({ headers, body }, res) => {
+const searchByLoc = async ({ headers, body }, res) => {
   try {
     const startLoc = _.get(body, "startLoc");
     const endLoc = _.get(body, "endLoc");
@@ -325,143 +325,34 @@ const trackOrder = async ({ headers, body }, res) => {
     res.status(500).send(util.httpResponse("NACK", error));
   }
 };
-/**
- * Action called by BPP with Context and Message
- * @param {object} req Api request object.
- * @param {object} res Api response object.
- * @return {object} Saves Response to DB
- */
-const onSearch = async ({ body }, res) => {
-  await util.saveToDb(body);
-};
 
-/**
- * Action called by BPP with Context and Message
- * @param {object} req Api request object.
- * @param {object} res Api response object.
- * @return {object} Saves Response to DB
- */
-const onSelect = async ({ body }, res) => {
-  await util.saveToDb(body);
-};
-
-/**
- * Action called by BPP with Context and Message
- * @param {object} req Api request object.
- * @param {object} res Api response object.
- * @return {object} Saves Response to DB
- */
-const onInit = async ({ body }, res) => {
-  await util.saveToDb(body);
-};
-
-/**
- * Action called by BPP with Context and Message
- * @param {object} req Api request object.
- * @param {object} res Api response object.
- * @return {object} Saves Response to DB
- */
-const onConfirm = async ({ body }, res) => {
-  await util.saveToDb(body);
-};
-
-/**
- * Action called by BPP with Context and Message
- * @param {object} req Api request object.
- * @param {object} res Api response object.
- * @return {object} Saves Response to DB
- */
-const onStatus = async ({ body }, res) => {
-  await util.saveToDb(body);
-};
-
-/**
- * Action called by BPP with Context and Message
- * @param {object} req Api request object.
- * @param {object} res Api response object.
- * @return {object} Saves Response to DB
- */
-const onCancel = async ({ body }, res) => {
-  await util.saveToDb(body);
-};
-
-/**
- * Action called by BPP with Context and Message
- * @param {object} req Api request object.
- * @param {object} res Api response object.
- * @return {object} Saves Response to DB
- */
-const onUpdate = async ({ body }, res) => {
-  await util.saveToDb(body);
-};
-
-/**
- * Action called by BPP with Context and Message
- * @param {object} req Api request object.
- * @param {object} res Api response object.
- * @return {object} Saves Response to DB
- */
-const onRating = async ({ body }, res) => {
-  await util.saveToDb(body);
-};
-
-/**
- * Action called by BPP with Context and Message
- * @param {object} req Api request object.
- * @param {object} res Api response object.
- * @return {object} Saves Response to DB
- */
-const onSupport = async ({ body }, res) => {
-  await util.saveToDb(body);
-};
-
-/**
- * Action called by BPP with Context and Message
- * @param {object} req Api request object.
- * @param {object} res Api response object.
- * @return {object} Saves Response to DB
- */
-const onTrack = async ({ body }, res) => {
-  await util.saveToDb(body);
-};
-
-const pollRequest = async(req) => {
+const pollRequest = async (req) => {
   const messageId = _.get(req, "messageId");
   do {
     let polling = true;
     try {
       // Waiting for 5 seconds before retrieving
-      await new Promise(resolve => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       const response = await mobility.getData(messageId);
       if (response) {
         polling = false;
       }
     } catch (err) {
-      console.error(`Problem in execution : ${err}`)
+      console.error(`Problem in execution : ${err}`);
     }
   } while (polling);
-}
+};
 
 module.exports = {
-  searchByPickupAndDropLoc,
+  searchByLoc,
   selectAgency,
-  onSearch,
-  onSelect,
   initializeOrder,
-  onInit,
   confirmOrder,
-  onConfirm,
   getOrderStatus,
-  onStatus,
-  onCancel,
-  onUpdate,
   cancelOrder,
   updateOrder,
   rateOrder,
-  onRating,
-  onSupport,
   getSupport,
-  onTrack,
   trackOrder,
-  pollRequest
+  pollRequest,
 };
