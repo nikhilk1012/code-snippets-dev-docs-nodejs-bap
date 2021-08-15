@@ -1,5 +1,5 @@
 const _ = require("lodash");
-const bap = require("../../services/bap");
+const mobilityService = require("../../services/mobility");
 const util = require("../../config/util");
 
 /**
@@ -34,7 +34,7 @@ const searchByLoc = async ({ headers, body }, res) => {
         },
       },
     };
-    const response = await util.request(headers, context, message, "/search");
+    const response = await util.request(headers, context, message, "/mobility/search");
     res
       .status(200)
       .send({ ...response.data, messageId: context["message_id"] });
@@ -63,7 +63,7 @@ const selectAgency = async ({ headers, body }, res) => {
         items,
       },
     };
-    const response = await util.request(headers, context, message, "/select");
+    const response = await util.request(headers, context, message, "/mobility/select");
     let data = {
       messageId: context.messageId,
       transactionId: context.transactionId,
@@ -104,7 +104,7 @@ const initializeOrder = async ({ headers, body }, res) => {
         },
       },
     };
-    const response = await util.request(headers, context, message, "/init");
+    const response = await util.request(headers, context, message, "/mobility/init");
     let data = {
       messageId: context.message_id,
       transactionId: context.transaction_id,
@@ -129,14 +129,14 @@ const confirmOrder = async ({ headers, body }, res) => {
       res.status(400).send(util.httpResponse("NACK", "Invalid Transaction Id"));
     }
     const paymentTransactionId = _.get(body, "paymentTransactionId");
-    const order = await bap.getOrder(orderId, transactionId);
+    const order = await mobilityService.getOrder(orderId, transactionId);
     const headers = util.constructAuthHeader(); // Auth Header
     const context = util.createContext(transactionId);
     let message = {
       order,
       paymentTransactionId,
     };
-    const response = await util.request(headers, context, message, "/confirm");
+    const response = await util.request(headers, context, message, "/mobility/confirm");
     let data = {
       messageId: context.message_id,
       transactionId: context.transaction_id,
@@ -162,7 +162,7 @@ const getOrderStatus = async ({ headers, body }, res) => {
     let message = {
       order_id: orderId,
     };
-    const response = await util.request(headers, context, message, "/status");
+    const response = await util.request(headers, context, message, "/mobility/status");
     let data = {
       messageId: context.message_id,
       transactionId: context.transaction_id,
@@ -191,7 +191,7 @@ const cancelOrder = async ({ headers, body }, res) => {
       order_id: orderId,
       cancellation_reason_id: cancellationReasonId,
     };
-    const response = await util.request(headers, context, message, "/cancel");
+    const response = await util.request(headers, context, message, "/mobility/cancel");
     let data = {
       messageId: context.message_id,
       transactionId: context.transaction_id,
@@ -234,7 +234,7 @@ const updateOrder = async ({ headers, body }, res) => {
     };
     const context = util.createContext(transactionId);
     const headers = util.constructAuthHeader(); // Auth Header
-    const response = await util.request(headers, context, message, "/update");
+    const response = await util.request(headers, context, message, "/mobility/update");
     let data = {
       messageId: context.message_id,
       transactionId: context.transaction_id,
@@ -262,7 +262,7 @@ const rateOrder = async ({ headers, body }, res) => {
       id: orderId,
       value: rating,
     };
-    const response = await util.request(headers, context, message, "/rate");
+    const response = await util.request(headers, context, message, "/mobility/rate");
     let data = {
       messageId: context.message_id,
       transactionId: context.transaction_id,
@@ -288,7 +288,7 @@ const getSupport = async ({ headers, body }, res) => {
     let message = {
       ref_id: orderId,
     };
-    const response = await util.request(headers, context, message, "/support");
+    const response = await util.request(headers, context, message, "/mobility/support");
     let data = {
       messageId: context.message_id,
       transactionId: context.transaction_id,
@@ -316,7 +316,7 @@ const trackOrder = async ({ headers, body }, res) => {
       order_id: orderId,
       callback_url: callbackURL,
     };
-    const response = await util.request(headers, context, message, "/track");
+    const response = await util.request(headers, context, message, "/mobility/track");
     let data = {
       messageId: context.message_id,
       transactionId: context.transaction_id,
@@ -330,7 +330,7 @@ const trackOrder = async ({ headers, body }, res) => {
 const getMessageById = async (req) => {
   try {
     const messageId = _.get(req, "messageId");
-    const response = await bap.getData(messageId);
+    const response = await mobilityService.getData(messageId);
     res.status(200).send(util.httpResponse('ACK', "", response));
   } catch(error) {
     res.status(500).send(util.httpResponse("NACK", error));

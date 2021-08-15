@@ -1,10 +1,29 @@
 const express = require("express");
 const router = express.Router();
-const mobiltyTrigger = require("./bap/trigger");
-const bapAction = require("./bap/action");
+// Mobility
+const mobiltyTrigger = require("./mobility/trigger");
+const mobilityAction = require("./mobility/action");
 
+// LocalRetail
+const localRetailTrigger = require("./local_retail/trigger");
+const localRetailAction = require("./local_retail/action");
+
+// Delivery
+const deliveryTrigger = require("./delivery/trigger");
+const deliveryAction = require("./delivery/action");
+
+const auth = (req, res, next) => {
+    // Verify the Digital Signature
+    next();
+}
 // Middleware to add Auth
-router.use("/", mobiltyTrigger); // Beckn Application Platform
-router.use("/", bapAction); // Beckn Application Platform
+router.use("/mobility", mobiltyTrigger);
+router.use("/mobility", auth, mobilityAction);
+
+router.use("/localRetail", localRetailTrigger);
+router.use("/localRetail", auth, localRetailAction);
+
+router.use("/delivery", deliveryTrigger);
+router.use("/delivery", auth, deliveryAction);
 
 module.exports = router;

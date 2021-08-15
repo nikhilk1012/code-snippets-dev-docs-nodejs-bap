@@ -36,7 +36,7 @@ const saveToDb = () => {
 
 const createContext = (transactionId) => {
   let context = {
-    domain: "bap",
+    domain: "bap", // Could be Mobility/Delivery/LocalRetail
     country: "IND",
     city: "std:080",
     core_version: "0.9.1",
