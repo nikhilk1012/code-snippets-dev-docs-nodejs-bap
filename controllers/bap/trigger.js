@@ -1,5 +1,5 @@
 const _ = require("lodash");
-const mobility = require("../../services/mobility");
+const bap = require("../../services/bap");
 const util = require("../../config/util");
 
 /**
@@ -129,7 +129,7 @@ const confirmOrder = async ({ headers, body }, res) => {
       res.status(400).send(util.httpResponse("NACK", "Invalid Transaction Id"));
     }
     const paymentTransactionId = _.get(body, "paymentTransactionId");
-    const order = await mobility.getOrder(orderId, transactionId);
+    const order = await bap.getOrder(orderId, transactionId);
     const headers = util.constructAuthHeader(); // Auth Header
     const context = util.createContext(transactionId);
     let message = {
@@ -182,6 +182,7 @@ const getOrderStatus = async ({ headers, body }, res) => {
 const cancelOrder = async ({ headers, body }, res) => {
   try {
     const orderId = _.get(body, "orderId");
+    // Get the cancellation Reasons from the Meta API /get_cancellation_reasons
     const cancellationReasonId = _.get(body, "cancellationReasonId");
     const transactionId = _.get(body, "transactionId");
     const headers = util.constructAuthHeader(); // Auth Header
@@ -326,21 +327,14 @@ const trackOrder = async ({ headers, body }, res) => {
   }
 };
 
-const pollRequest = async (req) => {
-  const messageId = _.get(req, "messageId");
-  do {
-    let polling = true;
-    try {
-      // Waiting for 5 seconds before retrieving
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-      const response = await mobility.getData(messageId);
-      if (response) {
-        polling = false;
-      }
-    } catch (err) {
-      console.error(`Problem in execution : ${err}`);
-    }
-  } while (polling);
+const getMessageById = async (req) => {
+  try {
+    const messageId = _.get(req, "messageId");
+    const response = await bap.getData(messageId);
+    res.status(200).send(util.httpResponse('ACK', "", response));
+  } catch(error) {
+    res.status(500).send(util.httpResponse("NACK", error));
+  }
 };
 
 module.exports = {
@@ -354,5 +348,5 @@ module.exports = {
   rateOrder,
   getSupport,
   trackOrder,
-  pollRequest,
+  getMessageById,
 };

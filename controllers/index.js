@@ -1,7 +1,7 @@
-const mobilityTrigger = require("./mobility/trigger");
-const mobilityAction = require("./mobility/action");
+const bapTrigger = require("./bap/trigger");
+const bapAction = require("./bap/action");
 
 module.exports = {
-  mobilityTrigger,
-  mobilityAction
+  bapTrigger,
+  bapAction
 };

@@ -36,7 +36,7 @@ const saveToDb = () => {
 
 const createContext = (transactionId) => {
   let context = {
-    domain: "mobility",
+    domain: "bap",
     country: "IND",
     city: "std:080",
     core_version: "0.9.1",
@@ -68,8 +68,9 @@ const request = (headers, context, message, pathURI) => {
   const request = {
     context,
     message,
-  };
-  let uri = lookup();
+  }
+  // Take the subscriber Id from the header and calls the registry to get the url. If already cached it need not to call again
+  let uri = lookup(headers);
   addSignature(headers);
   return axios({ url: `${uri}${pathURI}`, method: "POST", data: request, headers});
 };
