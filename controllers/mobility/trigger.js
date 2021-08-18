@@ -17,7 +17,6 @@ const searchByLoc = async ({ headers, body }, res) => {
     }
     const transactionId = _.get(body, "transactionId");
     const context = util.createContext(transactionId);
-    const headers = util.constructAuthHeader(); // Auth Header
     const message = {
       intent: {
         fulfillment: {
@@ -57,7 +56,6 @@ const selectAgency = async ({ headers, body }, res) => {
     }
     const transactionId = _.get(body, "transactionId");
     const context = util.createContext(transactionId);
-    const headers = util.constructAuthHeader(); // Auth Header
     const message = {
       order: {
         items,
@@ -88,7 +86,6 @@ const initializeOrder = async ({ headers, body }, res) => {
     const dropInstructions = _.get(body, "dropInstructions");
     const transactionId = _.get(body, "transactionId");
     const context = util.createContext(transactionId);
-    const headers = util.constructAuthHeader(); // Auth Header
     let message = {
       order: {
         billing: userBillingDetails,
@@ -130,7 +127,6 @@ const confirmOrder = async ({ headers, body }, res) => {
     }
     const paymentTransactionId = _.get(body, "paymentTransactionId");
     const order = await mobilityService.getOrder(orderId, transactionId);
-    const headers = util.constructAuthHeader(); // Auth Header
     const context = util.createContext(transactionId);
     let message = {
       order,
@@ -157,7 +153,6 @@ const getOrderStatus = async ({ headers, body }, res) => {
   try {
     const orderId = _.get(body, "orderId");
     const transactionId = _.get(body, "transactionId");
-    const headers = util.constructAuthHeader(); // Auth Header
     const context = util.createContext(transactionId);
     let message = {
       order_id: orderId,
@@ -185,7 +180,6 @@ const cancelOrder = async ({ headers, body }, res) => {
     // Get the cancellation Reasons from the Meta API /get_cancellation_reasons
     const cancellationReasonId = _.get(body, "cancellationReasonId");
     const transactionId = _.get(body, "transactionId");
-    const headers = util.constructAuthHeader(); // Auth Header
     const context = util.createContext(transactionId);
     let message = {
       order_id: orderId,
@@ -233,7 +227,6 @@ const updateOrder = async ({ headers, body }, res) => {
       },
     };
     const context = util.createContext(transactionId);
-    const headers = util.constructAuthHeader(); // Auth Header
     const response = await util.request(headers, context, message, "/mobility/update");
     let data = {
       messageId: context.message_id,
@@ -257,7 +250,6 @@ const rateOrder = async ({ headers, body }, res) => {
     const rating = _.get(body, "rating");
     const transactionId = _.get(body, "transactionId");
     const context = util.createContext(transactionId);
-    const headers = util.constructAuthHeader(); // Auth Header
     let message = {
       id: orderId,
       value: rating,
@@ -284,7 +276,6 @@ const getSupport = async ({ headers, body }, res) => {
     const orderId = _.get(body, "orderId");
     const transactionId = _.get(body, "transactionId");
     const context = util.createContext(transactionId);
-    const headers = util.constructAuthHeader(); // Auth Header
     let message = {
       ref_id: orderId,
     };
@@ -311,7 +302,6 @@ const trackOrder = async ({ headers, body }, res) => {
     const callbackURL = `http://localhost:3000/track_order?${orderId}`;
     const transactionId = _.get(body, "transactionId");
     const context = util.createContext(transactionId);
-    const headers = util.constructAuthHeader(); // Auth Header
     let message = {
       order_id: orderId,
       callback_url: callbackURL,
