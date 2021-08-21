@@ -8,7 +8,7 @@ const util = require("../../config/util");
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
-const searchByLoc = async ({ headers, body }, res) => {
+const searchByLoc = async ({ body }, res) => {
   try {
     const startLoc = _.get(body, "startLoc");
     const endLoc = _.get(body, "endLoc");
@@ -17,7 +17,6 @@ const searchByLoc = async ({ headers, body }, res) => {
     }
     const transactionId = _.get(body, "transactionId");
     const context = util.createContext(transactionId);
-    const headers = util.constructAuthHeader(); // Auth Header
     const message = {
       intent: {
         fulfillment: {
@@ -34,7 +33,7 @@ const searchByLoc = async ({ headers, body }, res) => {
         },
       },
     };
-    const response = await util.request(headers, context, message, "/delivery/search");
+    const response = await util.request(context, message, "/delivery/search");
     res
       .status(200)
       .send({ ...response.data, messageId: context["message_id"] });
@@ -49,7 +48,7 @@ const searchByLoc = async ({ headers, body }, res) => {
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
-const addItems = async ({ headers, body }, res) => {
+const addItems = async ({ body }, res) => {
   try {
     const items = _.get(body, "items");
     if (Array.isArray(items) && !items.length) {
@@ -57,13 +56,12 @@ const addItems = async ({ headers, body }, res) => {
     }
     const transactionId = _.get(body, "transactionId");
     const context = util.createContext(transactionId);
-    const headers = util.constructAuthHeader(); // Auth Header
     const message = {
       order: {
         items,
       },
     };
-    const response = await util.request(headers, context, message, "/delivery/select");
+    const response = await util.request(context, message, "/delivery/select");
     let data = {
       messageId: context.messageId,
       transactionId: context.transactionId,
@@ -80,7 +78,7 @@ const addItems = async ({ headers, body }, res) => {
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
-const initializeOrder = async ({ headers, body }, res) => {
+const initializeOrder = async ({ body }, res) => {
   try {
     const userBillingDetails = _.get(body, "userBillingDetails");
     const locationDetails = _.get(body, "locationDetails");
@@ -88,7 +86,6 @@ const initializeOrder = async ({ headers, body }, res) => {
     const dropInstructions = _.get(body, "dropInstructions");
     const transactionId = _.get(body, "transactionId");
     const context = util.createContext(transactionId);
-    const headers = util.constructAuthHeader(); // Auth Header
     let message = {
       order: {
         billing: userBillingDetails,
@@ -104,7 +101,7 @@ const initializeOrder = async ({ headers, body }, res) => {
         },
       },
     };
-    const response = await util.request(headers, context, message, "/delivery/init");
+    const response = await util.request(context, message, "/delivery/init");
     let data = {
       messageId: context.message_id,
       transactionId: context.transaction_id,
@@ -121,7 +118,7 @@ const initializeOrder = async ({ headers, body }, res) => {
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
-const confirmOrder = async ({ headers, body }, res) => {
+const confirmOrder = async ({ body }, res) => {
   try {
     const orderId = _.get(body, "orderId");
     const transactionId = _.get(body, "transactionId");
@@ -130,13 +127,12 @@ const confirmOrder = async ({ headers, body }, res) => {
     }
     const paymentTransactionId = _.get(body, "paymentTransactionId");
     const order = await deliveryService.getOrder(orderId, transactionId);
-    const headers = util.constructAuthHeader(); // Auth Header
     const context = util.createContext(transactionId);
     let message = {
       order,
       paymentTransactionId,
     };
-    const response = await util.request(headers, context, message, "/delivery/confirm");
+    const response = await util.request(context, message, "/delivery/confirm");
     let data = {
       messageId: context.message_id,
       transactionId: context.transaction_id,
@@ -153,16 +149,15 @@ const confirmOrder = async ({ headers, body }, res) => {
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
-const getOrderStatus = async ({ headers, body }, res) => {
+const getOrderStatus = async ({ body }, res) => {
   try {
     const orderId = _.get(body, "orderId");
     const transactionId = _.get(body, "transactionId");
-    const headers = util.constructAuthHeader(); // Auth Header
     const context = util.createContext(transactionId);
     let message = {
       order_id: orderId,
     };
-    const response = await util.request(headers, context, message, "/delivery/status");
+    const response = await util.request(context, message, "/delivery/status");
     let data = {
       messageId: context.message_id,
       transactionId: context.transaction_id,
@@ -179,19 +174,18 @@ const getOrderStatus = async ({ headers, body }, res) => {
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
-const cancelOrder = async ({ headers, body }, res) => {
+const cancelOrder = async ({ body }, res) => {
   try {
     const orderId = _.get(body, "orderId");
     // Get the cancellation Reasons from the Meta API /get_cancellation_reasons
     const cancellationReasonId = _.get(body, "cancellationReasonId");
     const transactionId = _.get(body, "transactionId");
-    const headers = util.constructAuthHeader(); // Auth Header
     const context = util.createContext(transactionId);
     let message = {
       order_id: orderId,
       cancellation_reason_id: cancellationReasonId,
     };
-    const response = await util.request(headers, context, message, "/delivery/cancel");
+    const response = await util.request(context, message, "/delivery/cancel");
     let data = {
       messageId: context.message_id,
       transactionId: context.transaction_id,
@@ -208,7 +202,7 @@ const cancelOrder = async ({ headers, body }, res) => {
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
-const updateOrder = async ({ headers, body }, res) => {
+const updateOrder = async ({ body }, res) => {
   try {
     const orderId = _.get(body, "orderId");
     const userBillingDetails = _.get(body, "userBillingDetails");
@@ -233,8 +227,7 @@ const updateOrder = async ({ headers, body }, res) => {
       },
     };
     const context = util.createContext(transactionId);
-    const headers = util.constructAuthHeader(); // Auth Header
-    const response = await util.request(headers, context, message, "/delivery/update");
+    const response = await util.request(context, message, "/delivery/update");
     let data = {
       messageId: context.message_id,
       transactionId: context.transaction_id,
@@ -251,18 +244,17 @@ const updateOrder = async ({ headers, body }, res) => {
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
-const rateOrder = async ({ headers, body }, res) => {
+const rateOrder = async ({ body }, res) => {
   try {
     const orderId = _.get(body, "orderId");
     const rating = _.get(body, "rating");
     const transactionId = _.get(body, "transactionId");
     const context = util.createContext(transactionId);
-    const headers = util.constructAuthHeader(); // Auth Header
     let message = {
       id: orderId,
       value: rating,
     };
-    const response = await util.request(headers, context, message, "/delivery/rate");
+    const response = await util.request(context, message, "/delivery/rate");
     let data = {
       messageId: context.message_id,
       transactionId: context.transaction_id,
@@ -279,16 +271,15 @@ const rateOrder = async ({ headers, body }, res) => {
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
-const getSupport = async ({ headers, body }, res) => {
+const getSupport = async ({ body }, res) => {
   try {
     const orderId = _.get(body, "orderId");
     const transactionId = _.get(body, "transactionId");
     const context = util.createContext(transactionId);
-    const headers = util.constructAuthHeader(); // Auth Header
     let message = {
       ref_id: orderId,
     };
-    const response = await util.request(headers, context, message, "/delivery/support");
+    const response = await util.request(context, message, "/delivery/support");
     let data = {
       messageId: context.message_id,
       transactionId: context.transaction_id,
@@ -305,18 +296,17 @@ const getSupport = async ({ headers, body }, res) => {
  * @param {object} res Api response object.
  * @return {object} returns Ack.
  */
-const trackOrder = async ({ headers, body }, res) => {
+const trackOrder = async ({ body }, res) => {
   try {
     const orderId = _.get(body, "orderId");
     const callbackURL = `http://localhost:3000/track_order?${orderId}`;
     const transactionId = _.get(body, "transactionId");
     const context = util.createContext(transactionId);
-    const headers = util.constructAuthHeader(); // Auth Header
     let message = {
       order_id: orderId,
       callback_url: callbackURL,
     };
-    const response = await util.request(headers, context, message, "/delivery/track");
+    const response = await util.request(context, message, "/delivery/track");
     let data = {
       messageId: context.message_id,
       transactionId: context.transaction_id,

@@ -18,12 +18,12 @@ const auth = (req, res, next) => {
 }
 // Middleware to add Auth
 router.use("/mobility", mobiltyTrigger);
-router.use("/mobility", auth, mobilityAction);
+router.use("/mobility", mobilityAction);
 
 router.use("/localRetail", localRetailTrigger);
-router.use("/localRetail", auth, localRetailAction);
+router.use("/localRetail", localRetailAction);
 
 router.use("/delivery", deliveryTrigger);
-router.use("/delivery", auth, deliveryAction);
+router.use("/delivery", deliveryAction);
 
 module.exports = router;

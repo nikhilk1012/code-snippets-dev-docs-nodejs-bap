@@ -60,18 +60,19 @@ const constructAuthHeader = () => {
   }
 }
 
-const lookup = (headers, context) => {
+const lookup = () => {
   return "http://localhost:3001"
 };
 
-const request = (headers, context, message, pathURI) => {
+const request = (context, message, pathURI) => {
   const request = {
     context,
     message,
   }
-  // Take the subscriber Id from the header and calls the registry to get the url. If already cached it need not to call again
-  let uri = lookup(headers);
-  addSignature(headers);
+  // lookup for BG/BPP URL in registry
+  let uri = lookup();
+  // Constructs Headers
+  const headers = constructAuthHeader();
   return axios({ url: `${uri}${pathURI}`, method: "POST", data: request, headers});
 };
 
